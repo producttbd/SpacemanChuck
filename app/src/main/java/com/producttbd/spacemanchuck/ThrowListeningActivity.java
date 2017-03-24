@@ -61,9 +61,10 @@ public class ThrowListeningActivity extends AppCompatActivity {
         private static final int NOT_STARTED = 0;
         private static final int LAUNCHING = 1;
         private static final int ZERO_GRAVITY = 2;
-        private static final double LAUNCH_GRAVITY_THRESHOLD = 15.0;
+        private static final double LAUNCH_GRAVITY_THRESHOLD = 25.0;
         private static final double LAUNCH_SECONDS_THRESHOLD = 0.3;
-        private static final double ZERO_GRAVITY_THRESHOLD = 2.0;
+        private static final double ZERO_GRAVITY_START_THRESHOLD = 5.0;
+        private static final double ZERO_GRAVITY_FINISH_THRESHOLD = 15.0;
 
         private Sensor mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         private boolean mListening = false;
@@ -130,7 +131,7 @@ public class ThrowListeningActivity extends AppCompatActivity {
         }
 
         private void handleLaunchingState(double timestampSeconds, double magnitude) {
-            if (magnitude < ZERO_GRAVITY_THRESHOLD) {
+            if (magnitude < ZERO_GRAVITY_START_THRESHOLD) {
                 setZeroGravityState(timestampSeconds);
             } if (magnitude < LAUNCH_GRAVITY_THRESHOLD
                     && (timestampSeconds - mLaunchStartTimestampSeconds) > LAUNCH_SECONDS_THRESHOLD) {
@@ -142,7 +143,7 @@ public class ThrowListeningActivity extends AppCompatActivity {
         }
 
         private void handleZeroGravityState(double timestampSeconds, double magnitude) {
-            if (magnitude > ZERO_GRAVITY_THRESHOLD) {
+            if (magnitude > ZERO_GRAVITY_FINISH_THRESHOLD) {
                 stopListening();
                 StringBuilder sb = new StringBuilder();
                 sb.append("Finished!\n");
