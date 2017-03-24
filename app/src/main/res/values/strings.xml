@@ -5,4 +5,9 @@
     <string name="accept">I accept.</string>
     <string name="reject">I disagree and won\'t play.</string>
     <string name="instructions">Help our astronaut friend go to space!\nPress the button below then carefully and smoothly toss your phone in the air.</string>
+    <string name="result_level_0">OK…</string>
+    <string name="result_level_1">Nice!</string>
+    <string name="result_level_2">Good job!</string>
+    <string name="result_level_3">Wow! Great job!</string>
+    <string name="height_text">%f.3 m</string>
 </resources>

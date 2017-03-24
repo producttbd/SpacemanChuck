@@ -13,7 +13,8 @@ import android.widget.TextView;
 
 public class ThrowListeningActivity extends AppCompatActivity {
 
-    public static final String THROW_RESULTS = "com.producttbd.spacemanchuck.THROW_RESULTS";
+    public static final String THROW_RESULT_DEBUG = "com.producttbd.spacemanchuck.THROW_RESULT_DEBUG";
+    public static final String THROW_RESULT_HEIGHT = "com.producttbd.spacemanchuck.THROW_RESULT_HEIGHT";
 
     private SensorManager mSensorManager;
     private ThrowListener mThrowListener;
@@ -46,10 +47,11 @@ public class ThrowListeningActivity extends AppCompatActivity {
         textView.setText(state);
     }
 
-    private void SendResults(String result) {
+    private void SendResults(double height, String debugString) {
         mThrowListener.stopListening();
         Intent intent = new Intent(this, ResultsActivity.class);
-        intent.putExtra(THROW_RESULTS, result);
+        intent.putExtra(THROW_RESULT_DEBUG, debugString);
+        intent.putExtra(THROW_RESULT_HEIGHT, height);
         startActivity(intent);
     }
 
@@ -74,7 +76,7 @@ public class ThrowListeningActivity extends AppCompatActivity {
         public void startListening() {
             if (!mListening) {
                 mSensorManager
-                        .registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+                        .registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
                 mListening = true;
                 setNotStartedState();
             }
@@ -150,10 +152,11 @@ public class ThrowListeningActivity extends AppCompatActivity {
                 double flightTime = timestampSeconds - mZeroGravityStartTimestampSeconds;
                 sb.append(flightTime);
                 sb.append("\nEstimated height from time: ");
-                sb.append(9.81 / 2.0 * flightTime * flightTime / 4.0);
+                double height = 9.81 / 2.0 * flightTime * flightTime / 4.0;
+                sb.append(height);
                 //sb.append("\nEstimated height from launch velocity: ");
                 //sb.append()
-                SendResults(sb.toString());
+                SendResults(height, sb.toString());
             }
         }
 
