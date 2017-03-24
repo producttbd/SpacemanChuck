@@ -4,4 +4,5 @@
     <string name="button_ready">Ready to launch!</string>
     <string name="accept">I accept.</string>
     <string name="reject">I disagree and won\'t play.</string>
+    <string name="instructions">Help our astronaut friend go to space!\nPress the button below then carefully and smoothly toss your phone in the air.</string>
 </resources>

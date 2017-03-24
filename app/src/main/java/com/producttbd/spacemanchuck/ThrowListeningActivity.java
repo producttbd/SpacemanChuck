@@ -42,7 +42,7 @@ public class ThrowListeningActivity extends AppCompatActivity {
     }
 
     public void setStateText(String state) {
-        TextView textView = (TextView) findViewById(R.id.stateText);
+        TextView textView = (TextView) findViewById(R.id.debugStateText);
         textView.setText(state);
     }
 
