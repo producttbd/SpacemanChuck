@@ -12,14 +12,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/standard_margin"
+        android:contentDescription=""
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/instructions"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/full_scene_square"
-        android:contentDescription="" />
+        app:srcCompat="@drawable/full_scene_square" />
 
     <TextView
         android:id="@+id/instructions"
@@ -58,19 +59,18 @@
         android:id="@+id/throwCommand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="@dimen/standard_margin"
         android:layout_marginRight="@dimen/standard_margin"
-        android:layout_marginTop="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/double_margin"
         android:text="@string/throw_command"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/colorPrimary"
         android:textSize="36sp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.50" />
 
 </android.support.constraint.ConstraintLayout>

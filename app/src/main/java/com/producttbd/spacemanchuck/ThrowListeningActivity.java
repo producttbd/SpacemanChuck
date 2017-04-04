@@ -1,5 +1,7 @@
 package com.producttbd.spacemanchuck;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -10,17 +12,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class ThrowListeningActivity extends AppCompatActivity {
 
-    private static final String TAG = ThrowListeningActivity.class.getSimpleName();
     public static final String THROW_RESULT_DEBUG = "com.producttbd.spacemanchuck.THROW_RESULT_DEBUG";
     public static final String THROW_RESULT_HEIGHT = "com.producttbd.spacemanchuck.THROW_RESULT_HEIGHT";
-
+    private static final String TAG = ThrowListeningActivity.class.getSimpleName();
+    private View mImageView;
     private View mInstructionsText;
     private View mThrowCommandText;
     private View mReadyButton;
@@ -33,6 +31,7 @@ public class ThrowListeningActivity extends AppCompatActivity {
         setContentView(R.layout.activity_throw_listening);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mThrowListener = new ThrowListener();
+        mImageView = findViewById(R.id.imageView);
         mInstructionsText = findViewById(R.id.instructions);
         mThrowCommandText = findViewById(R.id.throwCommand);
         mReadyButton = findViewById(R.id.readyButton);
@@ -49,8 +48,24 @@ public class ThrowListeningActivity extends AppCompatActivity {
         mThrowListener.stopListening();
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus && mImageView.getVisibility() != View.VISIBLE) {
+            animateOpening();
+        }
+    }
+
     public void onReadyClick(View view) {
         mThrowListener.startListening();
+    }
+
+    private void animateOpening() {
+        Animator imageAnim = AnimatorFactory.createRevealAnimator(mImageView);
+        Animator textAnim = AnimatorFactory.createFlyUpInAnimator(mInstructionsText);
+        Animator readyButtonAnim = AnimatorFactory.createFlyUpInAnimator(mReadyButton);
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.playSequentially(imageAnim, textAnim, readyButtonAnim);
+        animSet.start();
     }
 
     private void SendResults(double height, String debugString) {
@@ -102,7 +117,9 @@ public class ThrowListeningActivity extends AppCompatActivity {
             }
         }
 
-        /** For SensorEventListener */
+        /**
+         * For SensorEventListener
+         */
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
@@ -115,7 +132,9 @@ public class ThrowListeningActivity extends AppCompatActivity {
             updateState(event.timestamp * NS2S, Math.sqrt(total));
         }
 
-        /** For SensorEventListener */
+        /**
+         * For SensorEventListener
+         */
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
         }
@@ -126,7 +145,7 @@ public class ThrowListeningActivity extends AppCompatActivity {
                     handleNotStartedState(timestampSeconds, magnitude);
                     break;
                 case LAUNCHING:
-                     handleLaunchingState(timestampSeconds, magnitude);
+                    handleLaunchingState(timestampSeconds, magnitude);
                     break;
                 case ZERO_GRAVITY:
                     handleZeroGravityState(timestampSeconds, magnitude);
@@ -145,7 +164,8 @@ public class ThrowListeningActivity extends AppCompatActivity {
         private void handleLaunchingState(double timestampSeconds, double magnitude) {
             if (magnitude < ZERO_GRAVITY_START_THRESHOLD) {
                 setZeroGravityState(timestampSeconds);
-            } if (magnitude < LAUNCH_GRAVITY_THRESHOLD
+            }
+            if (magnitude < LAUNCH_GRAVITY_THRESHOLD
                     && (timestampSeconds - mLaunchStartTimestampSeconds) > LAUNCH_SECONDS_THRESHOLD) {
                 setNotStartedState();
             } else { // Still launching, accumulate velocity

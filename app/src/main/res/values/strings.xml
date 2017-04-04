@@ -10,5 +10,5 @@
     <string name="result_level_2">Good job!</string>
     <string name="result_level_3">Wow! Great job!</string>
     <string name="height_text" translatable="false">%.3f m</string>
-    <string name="throw_command">OK!\nThrow!</string>
+    <string name="throw_command">OK, toss!</string>
 </resources>
