@@ -8,14 +8,22 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class ThrowListeningActivity extends AppCompatActivity {
 
+    private static final String TAG = ThrowListeningActivity.class.getSimpleName();
     public static final String THROW_RESULT_DEBUG = "com.producttbd.spacemanchuck.THROW_RESULT_DEBUG";
     public static final String THROW_RESULT_HEIGHT = "com.producttbd.spacemanchuck.THROW_RESULT_HEIGHT";
 
+    private View mInstructionsText;
+    private View mThrowCommandText;
+    private View mReadyButton;
     private SensorManager mSensorManager;
     private ThrowListener mThrowListener;
 
@@ -25,6 +33,9 @@ public class ThrowListeningActivity extends AppCompatActivity {
         setContentView(R.layout.activity_throw_listening);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mThrowListener = new ThrowListener();
+        mInstructionsText = findViewById(R.id.instructions);
+        mThrowCommandText = findViewById(R.id.throwCommand);
+        mReadyButton = findViewById(R.id.readyButton);
     }
 
     @Override
@@ -40,11 +51,6 @@ public class ThrowListeningActivity extends AppCompatActivity {
 
     public void onReadyClick(View view) {
         mThrowListener.startListening();
-    }
-
-    public void setStateText(String state) {
-        TextView textView = (TextView) findViewById(R.id.debugStateText);
-        textView.setText(state);
     }
 
     private void SendResults(double height, String debugString) {
@@ -78,6 +84,9 @@ public class ThrowListeningActivity extends AppCompatActivity {
             if (!mListening) {
                 mSensorManager
                         .registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+                mInstructionsText.setVisibility(View.INVISIBLE);
+                mReadyButton.setVisibility(View.INVISIBLE);
+                mThrowCommandText.setVisibility(View.VISIBLE);
                 mListening = true;
                 setNotStartedState();
             }
@@ -87,6 +96,9 @@ public class ThrowListeningActivity extends AppCompatActivity {
             if (mListening) {
                 mSensorManager.unregisterListener(this);
                 mListening = false;
+                mThrowCommandText.setVisibility(View.INVISIBLE);
+                mInstructionsText.setVisibility(View.VISIBLE);
+                mReadyButton.setVisibility(View.VISIBLE);
             }
         }
 
@@ -155,6 +167,7 @@ public class ThrowListeningActivity extends AppCompatActivity {
                 sb.append("\nEstimated height from time: ");
                 double height = 9.81 / 2.0 * flightTime * flightTime / 4.0;
                 sb.append(height);
+                // TODO
                 //sb.append("\nEstimated height from launch velocity: ");
                 //sb.append()
                 SendResults(height, sb.toString());
@@ -162,12 +175,12 @@ public class ThrowListeningActivity extends AppCompatActivity {
         }
 
         private void setNotStartedState() {
-            setStateText("not started"); // remove
+            logStateText("not started"); // remove
             mCurrentState = NOT_STARTED;
         }
 
         private void setLaunchingState(double timestampSeconds, double magnitude) {
-            setStateText("launching");
+            logStateText("launching");
             mCurrentState = LAUNCHING;
             mLaunchVelocity = 0;
             mLaunchStartTimestampSeconds = timestampSeconds;
@@ -175,9 +188,13 @@ public class ThrowListeningActivity extends AppCompatActivity {
         }
 
         private void setZeroGravityState(double timestampSeconds) {
-            setStateText("zero gravity");
+            logStateText("zero gravity");
             mCurrentState = ZERO_GRAVITY;
             mZeroGravityStartTimestampSeconds = timestampSeconds;
+        }
+
+        private void logStateText(String state) {
+            Log.d(TAG, state);
         }
     }
 }

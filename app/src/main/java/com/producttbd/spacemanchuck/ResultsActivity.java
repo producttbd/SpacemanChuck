@@ -3,9 +3,12 @@ package com.producttbd.spacemanchuck;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 public class ResultsActivity extends AppCompatActivity {
+
+    private static final String TAG = ResultsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,7 @@ public class ResultsActivity extends AppCompatActivity {
         // Set the debug output
         String debugString = intent.getStringExtra(ThrowListeningActivity.THROW_RESULT_DEBUG);
         if (debugString != null) {
-            TextView debugTextView = (TextView) findViewById(R.id.debugThrowResult);
-            debugTextView.setText(debugString);
+            Log.d(TAG, debugString);
         }
     }
 
