@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_id">383235051503</string>
+    <string name="package_name">com.producttbd.spacemanchuck</string>
+    <string name="achievement_recruit">CgkI75_b1JMLEAIQAg</string>
+    <string name="achievement_pilot">CgkI75_b1JMLEAIQAw</string>
+    <string name="leaderboard_the_worlds_best">CgkI75_b1JMLEAIQBA</string>
+</resources>
