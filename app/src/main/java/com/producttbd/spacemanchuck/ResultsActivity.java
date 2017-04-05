@@ -7,11 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.Random;
 
 public class ResultsActivity extends AppCompatActivity {
 
     private static final String TAG = ResultsActivity.class.getSimpleName();
+    public static final String THROW_RESULT_DEBUG = "com.producttbd.spacemanchuck.THROW_RESULT_DEBUG";
+    public static final String THROW_RESULT_HEIGHT = "com.producttbd.spacemanchuck.THROW_RESULT_HEIGHT";
+
     private static final Random RAND = new Random();
     private static final double[] LEVELS = {0.25, 0.75, 2.0};
     private static final int[] HEADLINES_LEVEL_0 = {R.string.result_headline_level_0_0,
@@ -38,7 +43,7 @@ public class ResultsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_results);
 
         Intent intent = getIntent();
-        double height = intent.getDoubleExtra(ThrowListeningActivity.THROW_RESULT_HEIGHT, 0.0);
+        double height = intent.getDoubleExtra(THROW_RESULT_HEIGHT, 0.0);
 
         mSharedPreferences =
                 getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
@@ -61,7 +66,7 @@ public class ResultsActivity extends AppCompatActivity {
         heightTextView.setText(getString(R.string.height_text, height));
 
         // Set the debug output
-        String debugString = intent.getStringExtra(ThrowListeningActivity.THROW_RESULT_DEBUG);
+        String debugString = intent.getStringExtra(THROW_RESULT_DEBUG);
         if (debugString != null) {
             Log.d(TAG, debugString);
         }
