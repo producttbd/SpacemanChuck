@@ -1,5 +1,7 @@
 package com.producttbd.spacemanchuck.throwlistening;
 
+import android.support.annotation.Nullable;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -17,6 +19,7 @@ public class ThrowStateTrackerTest {
     private class TestListener implements ThrowCompletedListener {
         boolean completed = false;
         double height = 0.0;
+        @Nullable
         String debugText = null;
 
         @Override

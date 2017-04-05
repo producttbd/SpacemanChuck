@@ -4,6 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 /**
@@ -48,7 +49,7 @@ public class AccelerometerListener implements SensorEventListener {
 
     /** For SensorEventListener */
     @Override
-    public void onSensorChanged(SensorEvent event) {
+    public void onSensorChanged(@NonNull SensorEvent event) {
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER || event.values.length != 3) {
             return;
         }

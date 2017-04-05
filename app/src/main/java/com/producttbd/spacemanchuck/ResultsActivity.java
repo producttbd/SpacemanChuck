@@ -3,6 +3,7 @@ package com.producttbd.spacemanchuck;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
@@ -72,6 +73,7 @@ public class ResultsActivity extends AppCompatActivity {
         }
     }
 
+    @NonNull
     private String getHeadlineString(boolean firstThrow, boolean personalBest, double height) {
         if (firstThrow) {
             return getString(R.string.result_headline_first_throw);
@@ -88,7 +90,7 @@ public class ResultsActivity extends AppCompatActivity {
         }
     }
 
-    private String getRandomString(int[] headlines) {
+    private String getRandomString(@NonNull int[] headlines) {
         return getString(headlines[RAND.nextInt(headlines.length)]);
     }
 }

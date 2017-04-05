@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 
@@ -22,7 +23,7 @@ public class AnimatorFactory {
     private static final long SHORT_DURATION = 500;
     private static final long VERY_SHORT_DURATION = 250;
 
-    public static Animator createRevealAnimator(View view) {
+    public static Animator createRevealAnimator(@NonNull View view) {
         view.setVisibility(View.VISIBLE);
         Animator anim;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -37,7 +38,7 @@ public class AnimatorFactory {
         return anim;
     }
 
-    public static Animator createDisappearAnimator(final View view) {
+    public static Animator createDisappearAnimator(@NonNull final View view) {
         Animator anim;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             int cx = view.getWidth() / 2;
@@ -59,7 +60,8 @@ public class AnimatorFactory {
         return anim;
     }
 
-    public static Animator createFlyUpInAnimator(View view) {
+    @NonNull
+    public static Animator createFlyUpInAnimator(@NonNull View view) {
         AnimatorSet animSet = new AnimatorSet();
         animSet.playTogether(
                 ObjectAnimator.ofFloat(view, "translationY", FLY_IN_DISTANCE, 0), createFadeIn(view));
@@ -67,7 +69,8 @@ public class AnimatorFactory {
         return animSet;
     }
 
-    public static Animator createFlyDownOutAnimator(View view) {
+    @NonNull
+    public static Animator createFlyDownOutAnimator(@NonNull View view) {
         AnimatorSet animSet = new AnimatorSet();
         animSet.playTogether(
                 ObjectAnimator.ofFloat(view, "translationY", FLY_IN_DISTANCE), createFadeOut(view));
@@ -75,12 +78,12 @@ public class AnimatorFactory {
         return animSet;
     }
 
-    private static Animator createFadeIn(View view) {
+    private static Animator createFadeIn(@NonNull View view) {
         view.setAlpha(ALPHA_INVISIBLE);
         return ObjectAnimator.ofFloat(view, "alpha", ALPHA_INVISIBLE, ALPHA_VISIBLE);
     }
 
-    private static Animator createFadeOut(View view) {
+    private static Animator createFadeOut(@NonNull View view) {
         view.setAlpha(ALPHA_VISIBLE);
         return ObjectAnimator.ofFloat(view, "alpha", ALPHA_VISIBLE, ALPHA_INVISIBLE);
     }
