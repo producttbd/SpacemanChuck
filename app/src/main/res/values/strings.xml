@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">Spaceman Chuck</string>
-    <string name="warning">Please use extreme caution when playing this game so as to not hurt any person or damage any property. Player assumes all liability for any negative consequesnces of playing this game.</string>
+    <string name="warning">Please use extreme caution when playing this game so as to not hurt any person or damage any property. Player assumes all liability for any negative consequences of playing this game.</string>
     <string name="button_ready">Ready to launch!</string>
     <string name="accept">I accept.</string>
     <string name="reject">I disagree and won\'t play.</string>
