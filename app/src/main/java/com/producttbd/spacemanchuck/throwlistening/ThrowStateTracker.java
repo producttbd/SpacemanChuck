@@ -3,9 +3,8 @@ package com.producttbd.spacemanchuck.throwlistening;
 import android.util.Log;
 
 /**
- * Keeps track of a throw based on timestamped accelerometer events
+ * Keeps track of a throw based on timestamped accelerometer events.
  */
-
 public class ThrowStateTracker implements AccelerometerMagnitudeListener {
     private static final String TAG = AccelerometerListener.class.getSimpleName();
     private static final double NS2S = 1.0f / 1000000000.0f; // Nanoseconds to seconds

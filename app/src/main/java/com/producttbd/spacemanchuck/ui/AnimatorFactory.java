@@ -1,4 +1,4 @@
-package com.producttbd.spacemanchuck;
+package com.producttbd.spacemanchuck.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 
 /**
- * Create Animators for the UI
+ * Class to create Animators for the UI.
  */
 
 public class AnimatorFactory {

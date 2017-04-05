@@ -6,7 +6,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 /**
- * Class for listening to the accelerometer and detecting throws.
+ * Class for listening to the accelerometer and passing the events to a supplied listener.
  */
 
 public class AccelerometerListener implements SensorEventListener {

@@ -12,6 +12,7 @@ import android.view.View;
 import com.producttbd.spacemanchuck.throwlistening.AccelerometerListener;
 import com.producttbd.spacemanchuck.throwlistening.ThrowCompletedListener;
 import com.producttbd.spacemanchuck.throwlistening.ThrowStateTracker;
+import com.producttbd.spacemanchuck.ui.AnimatorFactory;
 
 public class ThrowListeningActivity extends AppCompatActivity
                                     implements ThrowCompletedListener {

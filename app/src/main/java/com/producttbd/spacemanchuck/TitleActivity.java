@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.producttbd.spacemanchuck.ui.AnimatorFactory;
+
 public class TitleActivity extends AppCompatActivity {
 
     private static final String TAG = TitleActivity.class.getSimpleName();
