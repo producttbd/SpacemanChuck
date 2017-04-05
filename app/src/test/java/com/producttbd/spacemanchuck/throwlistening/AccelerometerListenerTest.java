@@ -29,7 +29,7 @@ public class AccelerometerListenerTest {
     @Mock AccelerometerMagnitudeListener mMagnitudeListener;
     @Mock SensorManager mSensorManager;
     @Mock Sensor mSensor;
-    AccelerometerListener mAccelerometerListener;
+    private AccelerometerListener mAccelerometerListener;
 
     @Before
     public void setup() {
@@ -72,11 +72,6 @@ public class AccelerometerListenerTest {
         mAccelerometerListener.onSensorChanged(getAccelerometerEventWithValues(new float[]{1.0f,
                 1.0f, 1.0f}));
         verify(mMagnitudeListener).onNewDataPoint(anyLong(), anyDouble());
-    }
-
-    @Test
-    public void onAccuracyChanged() {
-
     }
 
     private SensorEvent getNonAccelerometerEvent() throws Exception {

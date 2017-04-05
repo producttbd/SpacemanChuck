@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.Random;
 
 public class ResultsActivity extends AppCompatActivity {
@@ -36,8 +34,6 @@ public class ResultsActivity extends AppCompatActivity {
             R.string.result_headline_personal_best_1, R.string.result_headline_personal_best_2,
             R.string.result_headline_personal_best_3};
 
-    private SharedPreferences mSharedPreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +42,8 @@ public class ResultsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         double height = intent.getDoubleExtra(THROW_RESULT_HEIGHT, 0.0);
 
-        mSharedPreferences =
-                getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        SharedPreferences mSharedPreferences = getSharedPreferences(getString(R.string
+                .preference_file_key), MODE_PRIVATE);
 
         float personalBestHeight = mSharedPreferences.getFloat(getString(R.string.personal_high_score_key), -1.0f);
         boolean firstThrow = personalBestHeight < 0.0f;
@@ -55,7 +51,7 @@ public class ResultsActivity extends AppCompatActivity {
         if (personalBest) {
             SharedPreferences.Editor editor = mSharedPreferences.edit();
             editor.putFloat(getString(R.string.personal_high_score_key), (float) height);
-            editor.commit();
+            editor.apply();
         }
 
         // Set the reaction headline (e.g. "Good job!")
