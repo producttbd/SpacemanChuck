@@ -6,7 +6,8 @@ import android.util.Log;
  * Keeps track of a throw based on timestamped accelerometer events.
  */
 public class ThrowStateTracker implements AccelerometerMagnitudeListener {
-    private static final String TAG = AccelerometerListener.class.getSimpleName();
+    private static final String TAG = ThrowStateTracker.class.getSimpleName();
+    private static final double HALF_STANDARD_GRAVITY = 9.80665 / 2.0;
     private static final double NS2S = 1.0f / 1000000000.0f; // Nanoseconds to seconds
     private static final int NOT_STARTED = 0;
     private static final int LAUNCHING = 1;
@@ -21,10 +22,14 @@ public class ThrowStateTracker implements AccelerometerMagnitudeListener {
     private double mLaunchStartTimestampSeconds = 0.0;
     private double mLastLaunchTimestampSeconds = 0.0;
     private double mZeroGravityStartTimestampSeconds = 0.0;
-    private ThrowCompletedListener mListener;
+    private final ThrowCompletedListener mListener;
 
     public ThrowStateTracker(ThrowCompletedListener listener) {
         mListener = listener;
+    }
+
+    int getCurrentState() {
+        return mCurrentState;
     }
 
     /** For AccelerometerMagnitudeListener */
@@ -35,7 +40,7 @@ public class ThrowStateTracker implements AccelerometerMagnitudeListener {
 
     /** For AccelerometerMagnitudeListener */
     @Override
-    public void onNewDataPoint(double timestampNanoseconds, double magnitude) {
+    public void onNewDataPoint(long timestampNanoseconds, double magnitude) {
         double timestampSeconds = timestampNanoseconds * NS2S;
         switch (mCurrentState) {
             case NOT_STARTED:
@@ -48,21 +53,22 @@ public class ThrowStateTracker implements AccelerometerMagnitudeListener {
                 handleZeroGravityState(timestampSeconds, magnitude);
                 break;
             default:
-                throw new RuntimeException();
+                Log.e(TAG, "Currently in invalid state.");
+                setThrowNotStartedState();
+                handleNotStartedState(timestampSeconds, magnitude);
         }
     }
 
     private void handleNotStartedState(double timestampSeconds, double magnitude) {
         if (magnitude > LAUNCH_GRAVITY_THRESHOLD) {
-            setLaunchingState(timestampSeconds, magnitude);
+            setLaunchingState(timestampSeconds);
         }
     }
 
     private void handleLaunchingState(double timestampSeconds, double magnitude) {
         if (magnitude < ZERO_GRAVITY_START_THRESHOLD) {
             setZeroGravityState(timestampSeconds);
-        }
-        if (magnitude < LAUNCH_GRAVITY_THRESHOLD
+        } else if (magnitude < LAUNCH_GRAVITY_THRESHOLD
                 && (timestampSeconds - mLaunchStartTimestampSeconds) > LAUNCH_SECONDS_THRESHOLD) {
             setThrowNotStartedState();
         } else { // Still launching, accumulate velocity
@@ -73,20 +79,20 @@ public class ThrowStateTracker implements AccelerometerMagnitudeListener {
 
     private void handleZeroGravityState(double timestampSeconds, double magnitude) {
         if (magnitude > ZERO_GRAVITY_FINISH_THRESHOLD) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Finished!\n");
-            sb.append("Launch Vel.: ");
-            sb.append(mLaunchVelocity);
-            sb.append("\nTotal air time: ");
             double flightTime = timestampSeconds - mZeroGravityStartTimestampSeconds;
-            sb.append(flightTime);
-            sb.append("\nEstimated height from time: ");
-            double height = 9.81 / 2.0 * flightTime * flightTime / 4.0;
-            sb.append(height);
+            // x = (1/2)acceleration * pow(t, 2)
+            // Assume half of flight is up, half of flight is down so only use half of the time:
+            // height = g/2 * pow(flightTime/2.0, 2)
+            double halfTime = flightTime / 2.0;
+            double height = HALF_STANDARD_GRAVITY * halfTime * halfTime;
             // TODO
+            String debug = "Finished!\n" +
+                    "Launch Vel.: " + mLaunchVelocity +
+                    "\nTotal air time: " + flightTime +
+                    "\nEstimated height from time: " + height;
             //sb.append("\nEstimated height from launch velocity: ");
             //sb.append()
-            mListener.onThrowCompleted(height, sb.toString());
+            mListener.onThrowCompleted(height, debug);
         }
     }
 
@@ -95,7 +101,7 @@ public class ThrowStateTracker implements AccelerometerMagnitudeListener {
         mCurrentState = NOT_STARTED;
     }
 
-    private void setLaunchingState(double timestampSeconds, double magnitude) {
+    private void setLaunchingState(double timestampSeconds) {
         logStateText("launching");
         mCurrentState = LAUNCHING;
         mLaunchVelocity = 0;

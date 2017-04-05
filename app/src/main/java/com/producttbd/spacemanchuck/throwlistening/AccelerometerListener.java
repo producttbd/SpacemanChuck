@@ -4,6 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 /**
  * Class for listening to the accelerometer and passing the events to a supplied listener.
@@ -11,9 +12,10 @@ import android.hardware.SensorManager;
 
 public class AccelerometerListener implements SensorEventListener {
 
-    private SensorManager mSensorManager;
-    private AccelerometerMagnitudeListener mMagnitudeListener;
-    private Sensor mAccelerometer;
+    final private static String TAG = AccelerometerListener.class.getSimpleName();
+    final private SensorManager mSensorManager;
+    final private AccelerometerMagnitudeListener mMagnitudeListener;
+    final private Sensor mAccelerometer;
     private boolean mListening = false;
 
 
@@ -26,11 +28,14 @@ public class AccelerometerListener implements SensorEventListener {
 
     public void startListening() {
         if (!mListening) {
-            mSensorManager
+            boolean success = mSensorManager
                     .registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-
-            mListening = true;
-            mMagnitudeListener.reset();
+            if (success) {
+                mListening = true;
+                mMagnitudeListener.reset();
+            } else {
+                Log.e(TAG, "Could not register accelerometer.");
+            }
         }
     }
 
@@ -48,7 +53,7 @@ public class AccelerometerListener implements SensorEventListener {
             return;
         }
         mMagnitudeListener.onNewDataPoint(event.timestamp,
-                                          AccelerometerCalculator.getMagnitude(event));
+                                          AccelerometerCalculator.getMagnitude(event.values));
     }
 
     /** For SensorEventListener */
