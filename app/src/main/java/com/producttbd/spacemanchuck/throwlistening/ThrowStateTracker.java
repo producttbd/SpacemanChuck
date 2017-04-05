@@ -1,18 +1,13 @@
-package com.producttbd.spacemanchuck;
+package com.producttbd.spacemanchuck.throwlistening;
 
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.util.Log;
 
 /**
- * Class for listening to the accelerometer and detecting throws.
+ * Keeps track of a throw based on timestamped accelerometer events
  */
 
-class ThrowListener implements SensorEventListener {
-
-    private static final String TAG = ThrowListener.class.getSimpleName();
+public class ThrowStateTracker implements AccelerometerMagnitudeListener {
+    private static final String TAG = AccelerometerListener.class.getSimpleName();
     private static final double NS2S = 1.0f / 1000000000.0f; // Nanoseconds to seconds
     private static final int NOT_STARTED = 0;
     private static final int LAUNCHING = 1;
@@ -22,59 +17,27 @@ class ThrowListener implements SensorEventListener {
     private static final double ZERO_GRAVITY_START_THRESHOLD = 5.0;
     private static final double ZERO_GRAVITY_FINISH_THRESHOLD = 15.0;
 
-    private SensorManager mSensorManager;
-    private ThrowListenerCallback mCallback;
-    private Sensor mAccelerometer;
-    private boolean mListening = false;
     private int mCurrentState = NOT_STARTED;
     private double mLaunchVelocity = 0.0;
     private double mLaunchStartTimestampSeconds = 0.0;
     private double mLastLaunchTimestampSeconds = 0.0;
     private double mZeroGravityStartTimestampSeconds = 0.0;
+    private ThrowCompletedListener mListener;
 
-    ThrowListener(SensorManager sensorManager, ThrowListenerCallback callback) {
-        mCallback = callback;
-        mSensorManager = sensorManager;
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    public ThrowStateTracker(ThrowCompletedListener listener) {
+        mListener = listener;
     }
 
-    public void startListening() {
-        if (!mListening) {
-            mSensorManager
-                    .registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-
-            mListening = true;
-            setThrowNotStartedState();
-        }
-    }
-
-    public void stopListening() {
-        if (mListening) {
-            mSensorManager.unregisterListener(this);
-            mListening = false;
-
-        }
-    }
-
-    /** For SensorEventListener */
+    /** For AccelerometerMagnitudeListener */
     @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
-            return;
-        }
-        float total = 0.0f;
-        for (int i = 0; i < event.values.length; ++i) {
-            total += event.values[i] * event.values[i];
-        }
-        updateState(event.timestamp * NS2S, Math.sqrt(total));
+    public void reset() {
+        setThrowNotStartedState();
     }
 
-    /** For SensorEventListener */
+    /** For AccelerometerMagnitudeListener */
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-    private void updateState(double timestampSeconds, double magnitude) {
+    public void onNewDataPoint(double timestampNanoseconds, double magnitude) {
+        double timestampSeconds = timestampNanoseconds * NS2S;
         switch (mCurrentState) {
             case NOT_STARTED:
                 handleNotStartedState(timestampSeconds, magnitude);
@@ -111,7 +74,6 @@ class ThrowListener implements SensorEventListener {
 
     private void handleZeroGravityState(double timestampSeconds, double magnitude) {
         if (magnitude > ZERO_GRAVITY_FINISH_THRESHOLD) {
-            stopListening();
             StringBuilder sb = new StringBuilder();
             sb.append("Finished!\n");
             sb.append("Launch Vel.: ");
@@ -125,7 +87,7 @@ class ThrowListener implements SensorEventListener {
             // TODO
             //sb.append("\nEstimated height from launch velocity: ");
             //sb.append()
-            mCallback.onThrowCompleted(height, sb.toString());
+            mListener.onThrowCompleted(height, sb.toString());
         }
     }
 
@@ -152,7 +114,5 @@ class ThrowListener implements SensorEventListener {
         Log.d(TAG, state);
     }
 
-    interface ThrowListenerCallback {
-        void onThrowCompleted(double height, String debugString);
-    }
+
 }

@@ -9,14 +9,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-public class ThrowListeningActivity extends AppCompatActivity implements ThrowListener.ThrowListenerCallback {
+import com.producttbd.spacemanchuck.throwlistening.AccelerometerListener;
+import com.producttbd.spacemanchuck.throwlistening.ThrowCompletedListener;
+import com.producttbd.spacemanchuck.throwlistening.ThrowStateTracker;
 
+public class ThrowListeningActivity extends AppCompatActivity
+                                    implements ThrowCompletedListener {
     private View mImageView;
     private View mInstructionsText;
     private View mThrowCommandText;
     private View mReadyButton;
-    private SensorManager mSensorManager;
-    private ThrowListener mThrowListener;
+    private AccelerometerListener mAccelerometerListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,9 @@ public class ThrowListeningActivity extends AppCompatActivity implements ThrowLi
         mInstructionsText = findViewById(R.id.instructions);
         mThrowCommandText = findViewById(R.id.throwCommand);
         mReadyButton = findViewById(R.id.readyButton);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mThrowListener  = new ThrowListener(mSensorManager, this);
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        ThrowStateTracker throwStateTracker =  new ThrowStateTracker(this);
+        mAccelerometerListener = new AccelerometerListener(sensorManager, throwStateTracker);
     }
 
     @Override
@@ -48,7 +52,7 @@ public class ThrowListeningActivity extends AppCompatActivity implements ThrowLi
         }
     }
 
-    /** For ThrowListenerCallback */
+    /** For ThrowCompletedListener */
     @Override
     public void onThrowCompleted(double height, String debugString) {
         setStandbyState();
@@ -72,16 +76,16 @@ public class ThrowListeningActivity extends AppCompatActivity implements ThrowLi
     }
 
     private void setReadyToThrowState() {
-        mThrowListener.startListening();
+        mAccelerometerListener.startListening();
         mInstructionsText.setVisibility(View.INVISIBLE);
         mReadyButton.setVisibility(View.INVISIBLE);
         mThrowCommandText.setVisibility(View.VISIBLE);
     }
 
     private void setStandbyState() {
+        mAccelerometerListener.stopListening();
         mThrowCommandText.setVisibility(View.INVISIBLE);
         mInstructionsText.setVisibility(View.VISIBLE);
         mReadyButton.setVisibility(View.VISIBLE);
-        mThrowListener.stopListening();
     }
 }
