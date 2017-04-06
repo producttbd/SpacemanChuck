@@ -17,7 +17,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.producttbd.spacemanchuck"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         vectorDrawables.useSupportLibrary = true
         versionCode 1
