@@ -23,15 +23,19 @@
         </activity>
         <activity
             android:name=".ThrowListeningActivity"
-            android:parentActivityName=".TitleActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.producttbd.spacemanchuck.TitleActivity" />
         </activity>
         <activity
             android:name=".ResultsActivity"
-            android:parentActivityName=".ThrowListeningActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.producttbd.spacemanchuck.ThrowListeningActivity" />
         </activity>
 
     </application>
