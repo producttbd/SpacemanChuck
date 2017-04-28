@@ -1,4 +1,4 @@
-package com.producttbd.spacemanchuck.throwlistening;
+package com.producttbd.spacemanchuck.tosslistening;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

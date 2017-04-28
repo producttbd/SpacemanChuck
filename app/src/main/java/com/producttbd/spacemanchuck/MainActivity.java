@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.producttbd.spacemanchuck.tosslistening.TossResult;
 import com.producttbd.spacemanchuck.user.WarningAcceptanceChecker;
 
 public class MainActivity extends AppCompatActivity implements WarningFragment
@@ -42,8 +43,8 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
     }
 
     @Override
-    public void onThrowCompleted(double height, String debugString) {
-        mResultsFragment.setThrowResults(height, debugString);
+    public void onTossCompleted(TossResult tossResult) {
+        mResultsFragment.setThrowResults(tossResult);
         switchToFragment(mResultsFragment);
     }
 

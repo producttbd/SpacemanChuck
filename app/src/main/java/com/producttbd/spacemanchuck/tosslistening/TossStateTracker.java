@@ -1,12 +1,13 @@
-package com.producttbd.spacemanchuck.throwlistening;
+package com.producttbd.spacemanchuck.tosslistening;
 
 import android.util.Log;
 
 /**
- * Keeps track of a throw based on timestamped accelerometer events.
+ * Keeps track of current status of a toss (basically, not started, in flight, landed) based on
+ * receiving timestamped accelerometer events.
  */
-public class ThrowStateTracker implements AccelerometerMagnitudeListener {
-    private static final String TAG = ThrowStateTracker.class.getSimpleName();
+public class TossStateTracker implements AccelerometerMagnitudeListener {
+    private static final String TAG = TossStateTracker.class.getSimpleName();
     private static final double HALF_STANDARD_GRAVITY = 9.80665 / 2.0;
     private static final double NS2S = 1.0f / 1000000000.0f; // Nanoseconds to seconds
     private static final int NOT_STARTED = 0;
@@ -22,9 +23,9 @@ public class ThrowStateTracker implements AccelerometerMagnitudeListener {
     private double mLaunchStartTimestampSeconds = 0.0;
     private double mLastLaunchTimestampSeconds = 0.0;
     private double mZeroGravityStartTimestampSeconds = 0.0;
-    private final ThrowCompletedListener mListener;
+    private final TossCompletedListener mListener;
 
-    public ThrowStateTracker(ThrowCompletedListener listener) {
+    public TossStateTracker(TossCompletedListener listener) {
         mListener = listener;
     }
 
@@ -92,7 +93,7 @@ public class ThrowStateTracker implements AccelerometerMagnitudeListener {
                     "\nEstimated height from time: " + height;
             //sb.append("\nEstimated height from launch velocity: ");
             //sb.append()
-            mListener.onThrowCompleted(height, debug);
+            mListener.onTossCompleted(new TossResult(flightTime, height, debug));
         }
     }
 

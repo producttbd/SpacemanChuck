@@ -10,9 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.producttbd.spacemanchuck.throwlistening.AccelerometerListener;
-import com.producttbd.spacemanchuck.throwlistening.ThrowCompletedListener;
-import com.producttbd.spacemanchuck.throwlistening.ThrowStateTracker;
+import com.producttbd.spacemanchuck.tosslistening.AccelerometerListener;
+import com.producttbd.spacemanchuck.tosslistening.TossCompletedListener;
+import com.producttbd.spacemanchuck.tosslistening.TossStateTracker;
+import com.producttbd.spacemanchuck.tosslistening.TossResult;
 import com.producttbd.spacemanchuck.ui.AnimatorFactory;
 
 
@@ -20,7 +21,7 @@ import com.producttbd.spacemanchuck.ui.AnimatorFactory;
  * A Fragment to show a UI for start and stop accelerometer listening.
  */
 public class TossListeningFragment extends Fragment
-        implements ThrowCompletedListener, View.OnClickListener {
+        implements TossCompletedListener, View.OnClickListener {
     private View mImageView;
     private View mInstructionsText;
     private View mThrowCommandText;
@@ -37,8 +38,8 @@ public class TossListeningFragment extends Fragment
         super.onCreate(savedInstanceState);
         SensorManager sensorManager =
                 (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
-        ThrowStateTracker throwStateTracker =  new ThrowStateTracker(this);
-        mAccelerometerListener = new AccelerometerListener(sensorManager, throwStateTracker);
+        TossStateTracker tossStateTracker =  new TossStateTracker(this);
+        mAccelerometerListener = new AccelerometerListener(sensorManager, tossStateTracker);
     }
 
     @Override
@@ -73,12 +74,12 @@ public class TossListeningFragment extends Fragment
     }
 
     /**
-     * For ThrowCompletedListener
+     * For TossCompletedListener
      */
     @Override
-    public void onThrowCompleted(double height, String debugString) {
+    public void onTossCompleted(TossResult tossResult) {
         setStandbyState();
-        mListener.onThrowCompleted(height, debugString);
+        mListener.onTossCompleted(tossResult);
     }
 
     @Override
@@ -113,6 +114,6 @@ public class TossListeningFragment extends Fragment
     }
 
     public interface OnTossListeningFragmentInteractionListener {
-        void onThrowCompleted(double height, String debugString);
+        void onTossCompleted(TossResult tossResult);
     }
 }

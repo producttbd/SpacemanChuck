@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.producttbd.spacemanchuck.tosslistening.TossResult;
+
 import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -52,9 +54,9 @@ public class ResultsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void setThrowResults(double height, @Nullable String debugString) {
-        mHeight = height;
-        mResultDebugString = debugString;
+    public void setThrowResults(TossResult tossResult) {
+        mHeight = tossResult.HeightMeters;
+        mResultDebugString = tossResult.DebugString;
     }
 
     @Override
