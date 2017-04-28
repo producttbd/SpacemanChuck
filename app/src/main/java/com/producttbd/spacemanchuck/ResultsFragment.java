@@ -1,20 +1,30 @@
 package com.producttbd.spacemanchuck;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Random;
 
-public class ResultsActivity extends AppCompatActivity {
+import static android.content.Context.MODE_PRIVATE;
 
-    private static final String TAG = ResultsActivity.class.getSimpleName();
-    public static final String THROW_RESULT_DEBUG = "com.producttbd.spacemanchuck.THROW_RESULT_DEBUG";
-    public static final String THROW_RESULT_HEIGHT = "com.producttbd.spacemanchuck.THROW_RESULT_HEIGHT";
+
+/**
+ * A simple Fragment to display results of the the toss.
+ */
+public class ResultsFragment extends Fragment {
+
+    private static final String TAG = ResultsFragment.class.getSimpleName();
 
     private static final Random RAND = new Random();
     private static final double[] LEVELS = {0.25, 0.75, 2.0};
@@ -34,39 +44,74 @@ public class ResultsActivity extends AppCompatActivity {
             R.string.result_headline_personal_best_1, R.string.result_headline_personal_best_2,
             R.string.result_headline_personal_best_3};
 
+    private OnFragmentInteractionListener mListener;
+    private TextView mReactionHeadlineTextView;
+    private TextView mHeightTextView;
+    private double mHeight = 0.0;
+    private String mResultDebugString = null;
+
+    public ResultsFragment() {
+        // Required empty public constructor
+    }
+
+    public void setThrowResults(double height, @Nullable String debugString) {
+        mHeight = height;
+        mResultDebugString = debugString;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_results);
+    }
 
-        Intent intent = getIntent();
-        double height = intent.getDoubleExtra(THROW_RESULT_HEIGHT, 0.0);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_results, container, false);
+        TextView mReactionHeadlineTextView = (TextView) view.findViewById(R.id.reactionHeadline);
+        TextView mHeightTextView = (TextView) view.findViewById(R.id.heightText);
+        SharedPreferences mSharedPreferences =
+                getContext().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
-        SharedPreferences mSharedPreferences = getSharedPreferences(getString(R.string
-                .preference_file_key), MODE_PRIVATE);
-
-        float personalBestHeight = mSharedPreferences.getFloat(getString(R.string.personal_high_score_key), -1.0f);
+        float personalBestHeight =
+                mSharedPreferences.getFloat(getString(R.string.personal_high_score_key), -1.0f);
         boolean firstThrow = personalBestHeight < 0.0f;
-        boolean personalBest = (float) height > personalBestHeight;
+        boolean personalBest = (float) mHeight > personalBestHeight;
         if (personalBest) {
+            Log.d(TAG, "Logging personal best score: " + mHeight);
             SharedPreferences.Editor editor = mSharedPreferences.edit();
-            editor.putFloat(getString(R.string.personal_high_score_key), (float) height);
+            editor.putFloat(getString(R.string.personal_high_score_key), (float) mHeight);
             editor.apply();
         }
 
         // Set the reaction headline (e.g. "Good job!")
-        TextView reactionHeadlineTextView = (TextView) findViewById(R.id.reactionHeadline);
-        reactionHeadlineTextView.setText(getHeadlineString(firstThrow, personalBest, height));
+        mReactionHeadlineTextView.setText(getHeadlineString(firstThrow, personalBest, mHeight));
 
         // Set the height
-        TextView heightTextView = (TextView) findViewById(R.id.heightText);
-        heightTextView.setText(getString(R.string.height_text, height));
+        mHeightTextView.setText(getString(R.string.height_text, mHeight));
 
         // Set the debug output
-        String debugString = intent.getStringExtra(THROW_RESULT_DEBUG);
-        if (debugString != null) {
-            Log.d(TAG, debugString);
+        if (mResultDebugString != null) {
+            Log.d(TAG, mResultDebugString);
         }
+        return view;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @NonNull
@@ -88,5 +133,9 @@ public class ResultsActivity extends AppCompatActivity {
 
     private String getRandomString(@NonNull int[] headlines) {
         return getString(headlines[RAND.nextInt(headlines.length)]);
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onRetryRequested();
     }
 }
