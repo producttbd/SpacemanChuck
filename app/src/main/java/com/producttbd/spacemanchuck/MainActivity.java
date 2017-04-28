@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
 
     private void switchToFragment(Fragment newFrag) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newFrag)
-                //.addToBackStack(null)
+                .addToBackStack(null)
                 .commit();
     }
 }
