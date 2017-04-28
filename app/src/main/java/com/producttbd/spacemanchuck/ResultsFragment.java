@@ -1,9 +1,7 @@
 package com.producttbd.spacemanchuck;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -81,16 +79,16 @@ public class ResultsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_results, container, false);
         TextView mReactionHeadlineTextView = (TextView) view.findViewById(R.id.reactionHeadline);
         TextView mHeightTextView = (TextView) view.findViewById(R.id.heightText);
-        SharedPreferences mSharedPreferences =
+        SharedPreferences sharedPreferences =
                 getContext().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
         float personalBestHeight =
-                mSharedPreferences.getFloat(getString(R.string.personal_high_score_key), -1.0f);
+                sharedPreferences.getFloat(getString(R.string.personal_high_score_key), -1.0f);
         boolean firstThrow = personalBestHeight < 0.0f;
         boolean personalBest = (float) mHeight > personalBestHeight;
         if (personalBest) {
             Log.d(TAG, "Logging personal best score: " + mHeight);
-            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putFloat(getString(R.string.personal_high_score_key), (float) mHeight);
             editor.apply();
         }
