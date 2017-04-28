@@ -22,7 +22,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Test class for AccelerometerListener
+ * Test class for AccelerometerListener: a class for listening to the system accelerometer events
+ * and passing the events to a supplied {@Link AccelerometerMagnitudeListener}. So we send events
+ * to the SUT and make sure they get passed to the mock AccelerometerMagnitudeListener as
+ * appropriate.
  */
 public class AccelerometerListenerTest {
 

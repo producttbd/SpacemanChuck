@@ -8,7 +8,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 /**
- * Class for listening to the accelerometer and passing the events to a supplied listener.
+ * Class for listening to the system accelerometer events and passing the events to a supplied
+ * {@Link AccelerometerMagnitudeListener}.
  */
 
 public class AccelerometerListener implements SensorEventListener {
