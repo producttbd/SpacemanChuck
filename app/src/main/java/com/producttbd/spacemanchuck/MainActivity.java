@@ -31,16 +31,35 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
         mTossListeningFragment = new TossListeningFragment();
         mResultsFragment = new ResultsFragment();
 
-        mSharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
-                MODE_PRIVATE);
-        mWarningAcceptanceChecker = new WarningAcceptanceChecker(mSharedPreferences, getString(R
-                .string.warning_accepted_time));
+        mSharedPreferences = getSharedPreferences(
+                getString(R.string.preference_file_key), MODE_PRIVATE);
+        mWarningAcceptanceChecker = new WarningAcceptanceChecker(
+                mSharedPreferences, getString(R.string.warning_accepted_time));
 
         Fragment firstFragment = mWarningAcceptanceChecker.shouldShowWarning(System
                 .currentTimeMillis()) ? mWarningFragment : mTossListeningFragment;
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
                 firstFragment).commit();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //mSignInManager.connect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO Trigger animations here?
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //mSignInManager.disconnect();
+    }
+
 
     @Override
     public void onTossCompleted(TossResult tossResult) {
