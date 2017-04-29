@@ -5,5 +5,10 @@
     <string name="package_name">com.producttbd.spacemanchuck</string>
     <string name="achievement_recruit">CgkI75_b1JMLEAIQAg</string>
     <string name="achievement_pilot">CgkI75_b1JMLEAIQAw</string>
-    <string name="leaderboard_the_worlds_best">CgkI75_b1JMLEAIQBA</string>
+    <string name="achievement_space_jockey">CgkI75_b1JMLEAIQBQ</string>
+    <string name="achievement_commander">CgkI75_b1JMLEAIQBg</string>
+    <string name="achievement_liftoff">CgkI75_b1JMLEAIQBw</string>
+    <string name="achievement_launch">CgkI75_b1JMLEAIQCA</string>
+    <string name="achievement_orbit">CgkI75_b1JMLEAIQCQ</string>
+    <string name="leaderboard_the_worlds_highest_flights">CgkI75_b1JMLEAIQBA</string>
 </resources>
