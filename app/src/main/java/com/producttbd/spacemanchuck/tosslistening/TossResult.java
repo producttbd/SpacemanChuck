@@ -11,7 +11,7 @@ public class TossResult {
     public final double TimeSeconds;
     @Nullable final public String DebugString;
 
-    TossResult(double timeSeconds, double heightMeters, @Nullable String debugString) {
+    public TossResult(double timeSeconds, double heightMeters, @Nullable String debugString) {
         HeightMeters = heightMeters;
         TimeSeconds = timeSeconds;
         DebugString = debugString;
