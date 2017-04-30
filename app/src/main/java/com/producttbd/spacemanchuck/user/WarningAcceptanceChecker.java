@@ -24,6 +24,6 @@ public class WarningAcceptanceChecker {
     }
 
     public void setAcceptedWarning(long currentTimeMillis) {
-        mSharedPreferences.edit().putLong(mWarningAcceptedTimeKey, currentTimeMillis).commit();
+        mSharedPreferences.edit().putLong(mWarningAcceptedTimeKey, currentTimeMillis).apply();
     }
 }

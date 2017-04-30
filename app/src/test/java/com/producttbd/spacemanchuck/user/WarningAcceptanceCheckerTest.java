@@ -6,9 +6,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,12 +49,21 @@ public class WarningAcceptanceCheckerTest {
 
         verify(mMockSharedPreferences).edit();
         verify(mMockEditor).putLong(KEY, currentTimeMillis);
-        verify(mMockEditor).commit();
+        verify(mMockEditor).apply();
+        verifyNoMoreInteractions(mMockSharedPreferences);
+        verifyNoMoreInteractions(mMockEditor);
     }
 
     @Test
     public void shouldShowWarning_noValueInSharedPreferencesReturnsTrue() {
-        when(mMockSharedPreferences.getLong(KEY, -1l)).thenReturn(-1l);
+        // Set out MockSharedPreferences to return the default value given.
+        when(mMockSharedPreferences.getLong(eq(KEY), anyLong())).thenAnswer(new Answer<Long>() {
+            @Override
+            public Long answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                return (Long) args[1];
+            }
+        });
 
         assertEquals(true, mSystemUnderTest.shouldShowWarning(0));
         assertEquals(true, mSystemUnderTest.shouldShowWarning(500));
