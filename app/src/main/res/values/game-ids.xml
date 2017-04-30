@@ -10,5 +10,8 @@
     <string name="achievement_liftoff">CgkI75_b1JMLEAIQBw</string>
     <string name="achievement_launch">CgkI75_b1JMLEAIQCA</string>
     <string name="achievement_orbit">CgkI75_b1JMLEAIQCQ</string>
+    <string name="achievement_moonshot">CgkI75_b1JMLEAIQCg</string>
+    <string name="achievement_gennady_padalka">CgkI75_b1JMLEAIQCw</string>
+    <string name="achievement_neil_armstrong">CgkI75_b1JMLEAIQDA</string>
     <string name="leaderboard_the_worlds_highest_flights">CgkI75_b1JMLEAIQBA</string>
 </resources>
