@@ -22,7 +22,7 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * A simple Fragment to display results of the the toss.
  */
-public class ResultsFragment extends Fragment {
+public class ResultsFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = ResultsFragment.class.getSimpleName();
 
@@ -49,6 +49,7 @@ public class ResultsFragment extends Fragment {
     private TextView mHeightTextView;
     private double mHeight = 0.0;
     private String mResultDebugString = null;
+    private static final int[] BUTTON_IDS = { R.id.achievements_button, R.id.leaderboards_button, R.id.retry_button };
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -79,6 +80,11 @@ public class ResultsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_results, container, false);
+        for (int id : BUTTON_IDS) {
+            View button = view.findViewById(id);
+            button.setOnClickListener(this);
+        }
+
         TextView mReactionHeadlineTextView = (TextView) view.findViewById(R.id.reactionHeadline);
         TextView mHeightTextView = (TextView) view.findViewById(R.id.heightText);
         SharedPreferences sharedPreferences =
@@ -114,6 +120,25 @@ public class ResultsFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View view) {
+        Log.d(TAG, "onClick");
+        if (mListener == null) return;
+        switch (view.getId()) {
+            case R.id.achievements_button:
+                mListener.onAchievementsRequested();
+                break;
+            case R.id.leaderboards_button:
+                mListener.onLeaderboardsRequested();
+                break;
+            case R.id.retry_button:
+                mListener.onRetryRequested();
+                break;
+            default:
+                break;
+        }
+    }
+
     @NonNull
     private String getHeadlineString(boolean firstThrow, boolean personalBest, double height) {
         if (firstThrow) {
@@ -136,6 +161,8 @@ public class ResultsFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
+        void onAchievementsRequested();
+        void onLeaderboardsRequested();
         void onRetryRequested();
     }
 }

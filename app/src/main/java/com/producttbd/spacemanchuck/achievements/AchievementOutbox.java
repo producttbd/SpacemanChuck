@@ -15,4 +15,15 @@ class AchievementOutbox {
     boolean TenSuccessivelyHigherFlights = false;
     boolean FifteenSuccessivelyHigherFlights = false;
     boolean TwentySuccessivelyHigherFlights = false;
+
+    void reset() {
+        LeaderboardBestHeight = 0.0;
+        FlightsToUpload = 0;
+        FlightMetersToUpload = 0;
+        FlightSecondsToUpload = 0;
+        ThreeSuccessivelyHigherFlights = false;
+        TenSuccessivelyHigherFlights = false;
+        FifteenSuccessivelyHigherFlights = false;
+        TwentySuccessivelyHigherFlights = false;
+    }
 }

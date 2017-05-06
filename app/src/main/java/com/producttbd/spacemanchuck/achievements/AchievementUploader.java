@@ -32,20 +32,25 @@ class AchievementUploader {
                         mResources.getString(R.string.leaderboard_the_worlds_highest_flights),
                         outbox.LeaderboardBestHeight);
         if (outbox.FlightsToUpload > 0) {
+            Log.d(TAG, "Recording " + outbox.FlightsToUpload + " flights.");
             for (int id : FLIGHT_NUMBER_ACHIEVEMENTS) {
                 mAchievementClient
                         .incrementAchievement(mResources.getString(id), outbox.FlightsToUpload);
             }
         }
         if (outbox.FlightMetersToUpload > 0) {
+            Log.d(TAG, "Recording " + outbox.FlightMetersToUpload + " meters.");
             mAchievementClient
                     .incrementAchievement(mResources.getString(R.string.achievement_neil_armstrong),
                             outbox.FlightMetersToUpload);
+            mTotalsManager.setSuccessfullyUploadedHeight(outbox.FlightMetersToUpload);
         }
         if (outbox.FlightSecondsToUpload > 0) {
+            Log.d(TAG, "Recording " + outbox.FlightSecondsToUpload + " seconds.");
             mAchievementClient
                     .incrementAchievement(mResources.getString(R.string.achievement_gennady_padalka),
                             outbox.FlightSecondsToUpload);
+            mTotalsManager.setSuccessfullyUploadedTime(outbox.FlightSecondsToUpload);
         }
         if (outbox.ThreeSuccessivelyHigherFlights) {
             mAchievementClient.unlockAchievement(mResources.getString(R.string.achievement_liftoff));
@@ -59,5 +64,6 @@ class AchievementUploader {
         if (outbox.TwentySuccessivelyHigherFlights) {
             mAchievementClient.unlockAchievement(mResources.getString(R.string.achievement_moonshot));
         }
+        outbox.reset();
     }
 }

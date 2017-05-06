@@ -7,7 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
+import com.producttbd.spacemanchuck.achievements.AchievementsManager;
 import com.producttbd.spacemanchuck.tosslistening.TossResult;
+import com.producttbd.spacemanchuck.user.GoogleSignInManager;
 import com.producttbd.spacemanchuck.user.WarningAcceptanceChecker;
 
 public class MainActivity extends AppCompatActivity implements WarningFragment
@@ -21,6 +25,9 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
 
     private SharedPreferences mSharedPreferences;
     private WarningAcceptanceChecker mWarningAcceptanceChecker;
+
+    private GoogleSignInManager mSignInManager;
+    private AchievementsManager mAchievementsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
         mWarningAcceptanceChecker = new WarningAcceptanceChecker(
                 mSharedPreferences, getString(R.string.warning_accepted_time));
 
+        mSignInManager = new GoogleSignInManager(this);
+        mAchievementsManager = new AchievementsManager(
+                mSignInManager.getGoogleApiClient(), mSharedPreferences, getResources());
+
         Fragment firstFragment = mWarningAcceptanceChecker.shouldShowWarning(System
                 .currentTimeMillis()) ? mWarningFragment : mTossListeningFragment;
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
@@ -45,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
     @Override
     protected void onStart() {
         super.onStart();
-        //mSignInManager.connect();
+        mSignInManager.connect();
     }
 
     @Override
@@ -64,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
     @Override
     public void onTossCompleted(TossResult tossResult) {
         mResultsFragment.setThrowResults(tossResult);
+        mAchievementsManager.add(tossResult);
         switchToFragment(mResultsFragment);
     }
 
@@ -81,6 +93,26 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void onAchievementsRequested() {
+        if (mSignInManager.isConnected()) {
+            startActivityForResult(Games.Achievements.getAchievementsIntent(mSignInManager.getGoogleApiClient()),
+                    5001);
+        } else {
+            // TODO handle error
+        }
+    }
+
+    @Override
+    public void onLeaderboardsRequested() {
+        if (mSignInManager.isConnected()) {
+            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mSignInManager.getGoogleApiClient()),
+                    5001);
+        } else {
+            // TODO handle error
+        }
     }
 
     @Override

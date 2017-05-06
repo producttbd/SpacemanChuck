@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -65,6 +67,7 @@ public class AchievementUploaderTest {
         verify(mAchievementClient).submitLeaderboardScore(LEADERBOARD, 8.2);
         verifyNoMoreInteractions(mAchievementClient);
         verifyNoMoreInteractions(mTotalsManager);
+        assertOutboxEmpty();
     }
 
     @Test
@@ -80,6 +83,7 @@ public class AchievementUploaderTest {
         verify(mAchievementClient).incrementAchievement(COMMANDER, 3);
         verifyNoMoreInteractions(mAchievementClient);
         verifyNoMoreInteractions(mTotalsManager);
+        assertOutboxEmpty();
     }
 
     @Test
@@ -90,8 +94,10 @@ public class AchievementUploaderTest {
 
         verify(mAchievementClient).submitLeaderboardScore(LEADERBOARD, 0.0);
         verify(mAchievementClient).incrementAchievement(NEIL_ARMSTRONG, 3);
+        verify(mTotalsManager).setSuccessfullyUploadedHeight(3);
         verifyNoMoreInteractions(mAchievementClient);
         verifyNoMoreInteractions(mTotalsManager);
+        assertOutboxEmpty();
     }
 
     @Test
@@ -102,8 +108,10 @@ public class AchievementUploaderTest {
 
         verify(mAchievementClient).submitLeaderboardScore(LEADERBOARD, 0.0);
         verify(mAchievementClient).incrementAchievement(GENNADY_PADALKA, 3);
+        verify(mTotalsManager).setSuccessfullyUploadedTime(3);
         verifyNoMoreInteractions(mAchievementClient);
         verifyNoMoreInteractions(mTotalsManager);
+        assertOutboxEmpty();
     }
 
     @Test
@@ -116,6 +124,7 @@ public class AchievementUploaderTest {
         verify(mAchievementClient).unlockAchievement(LIFTOFF);
         verifyNoMoreInteractions(mAchievementClient);
         verifyNoMoreInteractions(mTotalsManager);
+        assertOutboxEmpty();
     }
 
     @Test
@@ -128,6 +137,7 @@ public class AchievementUploaderTest {
         verify(mAchievementClient).unlockAchievement(LAUNCH);
         verifyNoMoreInteractions(mAchievementClient);
         verifyNoMoreInteractions(mTotalsManager);
+        assertOutboxEmpty();
     }
 
     @Test
@@ -140,6 +150,7 @@ public class AchievementUploaderTest {
         verify(mAchievementClient).unlockAchievement(ORBIT);
         verifyNoMoreInteractions(mAchievementClient);
         verifyNoMoreInteractions(mTotalsManager);
+        assertOutboxEmpty();
     }
 
     @Test
@@ -152,5 +163,17 @@ public class AchievementUploaderTest {
         verify(mAchievementClient).unlockAchievement(MOONSHOT);
         verifyNoMoreInteractions(mAchievementClient);
         verifyNoMoreInteractions(mTotalsManager);
+        assertOutboxEmpty();
+    }
+
+    private void assertOutboxEmpty() {
+        assertEquals(0.0, mOutbox.LeaderboardBestHeight, 0.0000001);
+        assertEquals(0, mOutbox.FlightsToUpload);
+        assertEquals(0, mOutbox.FlightMetersToUpload);
+        assertEquals(0, mOutbox.FlightSecondsToUpload);
+        assertFalse(mOutbox.ThreeSuccessivelyHigherFlights);
+        assertFalse(mOutbox.TenSuccessivelyHigherFlights);
+        assertFalse(mOutbox.FifteenSuccessivelyHigherFlights);
+        assertFalse(mOutbox.TwentySuccessivelyHigherFlights);
     }
 }
