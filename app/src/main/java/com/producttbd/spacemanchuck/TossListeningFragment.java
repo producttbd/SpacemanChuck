@@ -33,6 +33,10 @@ public class TossListeningFragment extends Fragment
         // Required empty public constructor
     }
 
+    public void jumpToListening() {
+        setReadyToTossState();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +89,7 @@ public class TossListeningFragment extends Fragment
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.readyButton) {
-            setReadyToThrowState();
+            setReadyToTossState();
         }
     }
 
@@ -99,7 +103,7 @@ public class TossListeningFragment extends Fragment
         animSet.start();
     }
 
-    private void setReadyToThrowState() {
+    private void setReadyToTossState() {
         mAccelerometerListener.startListening();
         mInstructionsText.setVisibility(View.INVISIBLE);
         mReadyButton.setVisibility(View.INVISIBLE);

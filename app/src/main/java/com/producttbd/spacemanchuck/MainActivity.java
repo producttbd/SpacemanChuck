@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRetryRequested() {
         switchToFragment(mTossListeningFragment);
+        mTossListeningFragment.jumpToListening();
     }
 
     private void switchToFragment(Fragment newFrag) {
