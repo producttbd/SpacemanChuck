@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        //mSignInManager.disconnect();
+        mSignInManager.disconnect();
     }
 
 
