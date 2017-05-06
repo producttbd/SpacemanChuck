@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--https://coolors.co/60b2e5-f55d3e-878e88-f7cb15-ffffff-->
+    <!--https://coolors.co/60b2e5-f43d18-878e88-f7d342-ffffff-->
+    <!--https://coolors.co/60b2e5-ffe74c-ff5964-ffffff-6bf178-->
+    <!--https://coolors.co/60b2e5-ff3240-ffe74c-6bf178-ffffff-->
     <color name="colorPrimary">#03038e</color>
     <color name="colorPrimaryDark">#020268</color>
     <color name="colorAccent">#FF0033</color>
