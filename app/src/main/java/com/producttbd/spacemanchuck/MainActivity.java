@@ -7,16 +7,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
-import com.producttbd.spacemanchuck.achievements.AchievementsManager;
+import com.producttbd.spacemanchuck.achievements.AchievementsCoordinator;
 import com.producttbd.spacemanchuck.tosslistening.TossResult;
 import com.producttbd.spacemanchuck.user.GoogleSignInManager;
 import com.producttbd.spacemanchuck.user.WarningAcceptanceChecker;
 
-public class MainActivity extends AppCompatActivity implements WarningFragment
-        .OnWarningFragmentInteractionListener, TossListeningFragment
-        .OnTossListeningFragmentInteractionListener, ResultsFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements
+        WarningFragment.OnWarningFragmentInteractionListener,
+        TossListeningFragment.OnTossListeningFragmentInteractionListener,
+        ResultsFragment.OnFragmentInteractionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private WarningFragment mWarningFragment;
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
     private WarningAcceptanceChecker mWarningAcceptanceChecker;
 
     private GoogleSignInManager mSignInManager;
-    private AchievementsManager mAchievementsManager;
+    private AchievementsCoordinator mAchievementsCoordinator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
                 mSharedPreferences, getString(R.string.warning_accepted_time));
 
         mSignInManager = new GoogleSignInManager(this);
-        mAchievementsManager = new AchievementsManager(
-                mSignInManager.getGoogleApiClient(), mSharedPreferences, getResources());
+        mAchievementsCoordinator = new AchievementsCoordinator(
+                mSignInManager, mSharedPreferences, getResources());
 
         Fragment firstFragment = mWarningAcceptanceChecker.shouldShowWarning(System
                 .currentTimeMillis()) ? mWarningFragment : mTossListeningFragment;
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements WarningFragment
     @Override
     public void onTossCompleted(TossResult tossResult) {
         mResultsFragment.setThrowResults(tossResult);
-        mAchievementsManager.add(tossResult);
+        mAchievementsCoordinator.add(tossResult);
         switchToFragment(mResultsFragment);
     }
 
