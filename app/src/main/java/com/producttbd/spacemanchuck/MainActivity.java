@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements
 
         Fragment firstFragment = mWarningAcceptanceChecker.shouldShowWarning(System
                 .currentTimeMillis()) ? mWarningFragment : mTossListeningFragment;
+        // TODO There is a comment in the TypeANumber example talking about supporting rotation and
+        // that being problematic---it could cause overlapping fragments.
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
                 firstFragment).commit();
     }
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAchievementsRequested() {
+        Log.d(TAG, "onAchievementsRequested");
         if (mSignInManager.isConnected()) {
             startActivityForResult(Games.Achievements.getAchievementsIntent(mSignInManager.getGoogleApiClient()),
                     5001);
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLeaderboardsRequested() {
+        Log.d(TAG, "onLeaderboardsRequested");
         if (mSignInManager.isConnected()) {
             startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mSignInManager.getGoogleApiClient()),
                     5001);
@@ -121,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void switchToFragment(Fragment newFrag) {
+        Log.d(TAG, "switchToFragment");
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newFrag)
                 .addToBackStack(null).commit();
     }
