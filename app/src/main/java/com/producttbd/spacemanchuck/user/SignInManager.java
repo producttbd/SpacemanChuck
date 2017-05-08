@@ -1,22 +1,48 @@
 package com.producttbd.spacemanchuck.user;
 
 /**
- * Created by t on 4/30/17.
+ * Interface to wrap a connection API.
  */
 
 public interface SignInManager {
-    void setListener(SignInListener listener);
+    /**
+     * Checks previous state and connects, re-connects, does not connect, or calls
+     * createPromptToSignIn as appropriate depending on previous state and user preference.
+     * To be called in Activity.onStart.
+     */
+    void start();
 
-    void onSignInRequested();
-    void onSignOutRequested();
+    /**
+     * Disconnects any connected client. To be called in Activity.onStop.
+     */
+    void stop();
 
-    void connect();
-    void disconnect();
+    /**
+     * Returns true if actively connected.
+     */
     boolean isConnected();
 
-    public interface SignInListener {
+    /**
+     * To be called when the user has requested or accepted a signing in.
+     */
+    void onSignInRequested();
+
+    /**
+     * To be called when the user has requested signing out.
+     */
+    void onSignOutRequested();
+
+//    Intent getAchievementsIntent();
+//
+//    Intent getLeaderboardIntent();
+
+    interface SignInListener {
+        void createPromptToSignIn();
+
         void onSignedIn();
+
         void onSignedOut();
+
         void onFailure();
     }
 }

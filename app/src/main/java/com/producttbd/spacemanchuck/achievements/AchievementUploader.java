@@ -1,6 +1,7 @@
 package com.producttbd.spacemanchuck.achievements;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.producttbd.spacemanchuck.R;
@@ -25,7 +26,7 @@ class AchievementUploader {
         mResources = resources;
     }
 
-    public void uploadAchievements(AchievementOutbox outbox) {
+    public void uploadAchievements(@NonNull AchievementOutbox outbox) {
         Log.d(TAG, "uploadAchievements");
         mAchievementClient
                 .submitLeaderboardScore(

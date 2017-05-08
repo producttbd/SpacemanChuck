@@ -1,6 +1,7 @@
 package com.producttbd.spacemanchuck.achievements;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import com.producttbd.spacemanchuck.tosslistening.TossCollector;
 import com.producttbd.spacemanchuck.tosslistening.TossResult;
@@ -11,6 +12,7 @@ import com.producttbd.spacemanchuck.tosslistening.TossResult;
 class AchievementTossCollector implements TossCollector {
 
     private TotalsManager mTotalsManager;
+    @NonNull
     private AchievementOutbox mAchievementOutbox = new AchievementOutbox();
     private int mSuccessivelyHigherFlights = 0;
     private double mLastFlightHeight = 0.0;
@@ -19,11 +21,12 @@ class AchievementTossCollector implements TossCollector {
         mTotalsManager = totalsManager;
     }
 
+    @NonNull
     public AchievementOutbox getAchievementOutbox() {
         return mAchievementOutbox;
     }
 
-    public void add(TossResult tossResult) {
+    public void add(@NonNull TossResult tossResult) {
         mAchievementOutbox.LeaderboardBestHeight =
                 Math.max(mAchievementOutbox.LeaderboardBestHeight, tossResult.HeightMeters);
         ++mAchievementOutbox.FlightsToUpload;

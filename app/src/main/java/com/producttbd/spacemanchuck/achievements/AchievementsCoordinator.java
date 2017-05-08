@@ -2,6 +2,7 @@ package com.producttbd.spacemanchuck.achievements;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.producttbd.spacemanchuck.tosslistening.TossCollector;
@@ -19,7 +20,7 @@ public class AchievementsCoordinator implements TossCollector {
     private AchievementTossCollector mAchievementTossCollector;
     private AchievementUploader mAchievementUploader;
 
-    public AchievementsCoordinator(GoogleSignInManager googleSignInManager, SharedPreferences sharedPreferences,
+    public AchievementsCoordinator(@NonNull GoogleSignInManager googleSignInManager, SharedPreferences sharedPreferences,
                                    Resources resources) {
         mGoogleSignInManager = googleSignInManager;
         TotalsManager totalsManager = new LocalTotalsManager(sharedPreferences);

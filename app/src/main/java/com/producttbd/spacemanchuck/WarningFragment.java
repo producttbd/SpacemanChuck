@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +26,7 @@ public class WarningFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = WarningFragment.class.getSimpleName();
 
+    @Nullable
     private OnWarningFragmentInteractionListener mListener;
     private View mImageView;
     private View mWarningText;
@@ -35,7 +38,7 @@ public class WarningFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_warning, container, false);
         mImageView = view.findViewById(R.id.imageView);
@@ -54,7 +57,7 @@ public class WarningFragment extends Fragment implements View.OnClickListener {
             mListener = (OnWarningFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnResultsFragmentInteractionListener");
         }
     }
 
@@ -73,7 +76,7 @@ public class WarningFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(@NonNull View view) {
         Log.d(TAG, "onClick");
         switch (view.getId()) {
             case R.id.acceptButton:

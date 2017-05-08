@@ -1,10 +1,9 @@
 package com.producttbd.spacemanchuck.user;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,21 +23,26 @@ public class GoogleSignInManager implements SignInManager, GoogleApiClient.Conne
         GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = GoogleSignInManager.class.getSimpleName();
-    private GoogleApiClient mGoogleApiClient;
-    private Activity mActivity;
+    @NonNull private final Activity mActivity;
+    @NonNull private final GoogleApiClient mGoogleApiClient;
+    @NonNull private final SignInRequestedChecker mSignInRequestedChecker;
+    @NonNull private final SignInListener mListener;
     private boolean mResolvingConnectionFailure = false;
-    private boolean mAutoStartSignInFlow = true;
-    private boolean mSignInClicked = false;
-
-    private SignInListener mListener = null;
 
     // request codes we use when invoking an external activity
     private static final int RC_RESOLVE = 5000;
     private static final int RC_UNUSED = 5001;
     private static final int RC_SIGN_IN = 9001;
 
-    public GoogleSignInManager(Activity activity) {
+    public GoogleSignInManager(@NonNull Activity activity, @NonNull SignInListener listener) {
         mActivity = activity;
+        mListener = listener;
+
+        String sharedPreferencesKey = activity.getString(R.string.preference_file_key);
+        SharedPreferences sharedPreferences =
+                activity.getSharedPreferences(sharedPreferencesKey, Context.MODE_PRIVATE);
+        mSignInRequestedChecker = new SignInRequestedChecker(
+                sharedPreferences, activity.getString(R.string.sign_in_requested));
         mGoogleApiClient = new GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -46,35 +50,23 @@ public class GoogleSignInManager implements SignInManager, GoogleApiClient.Conne
                 .build();
     }
 
-    public GoogleApiClient getGoogleApiClient() { return mGoogleApiClient; }
-
-    @Override
-    public void setListener(SignInListener listener) {
-        mListener = listener;
+    @NonNull
+    public GoogleApiClient getGoogleApiClient() {
+        return mGoogleApiClient;
     }
 
     @Override
-    public void onSignInRequested() {
-        mSignInClicked = true;
-        connect();
-    }
-
-    @Override
-    public void onSignOutRequested() {
-        mSignInClicked = false;
-        disconnect();
-    }
-
-    @Override
-    public void connect() {
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void disconnect() {
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
+    public void start() {
+        if (mSignInRequestedChecker.shouldPromptToSignIn()) {
+            mListener.createPromptToSignIn();
+        } else if (mSignInRequestedChecker.shouldSignInAutomatically()) {
+            connect();
         }
+    }
+
+    @Override
+    public void stop() {
+        disconnect();
     }
 
     @Override
@@ -83,17 +75,36 @@ public class GoogleSignInManager implements SignInManager, GoogleApiClient.Conne
     }
 
     @Override
+    public void onSignInRequested() {
+        mSignInRequestedChecker.setSignInRequested(true);
+        connect();
+    }
+
+    @Override
+    public void onSignOutRequested() {
+        mSignInRequestedChecker.setSignInRequested(false);
+        disconnect();
+    }
+
+//    Intent getAchievementsIntent() {
+//
+//    }
+//
+//    Intent getLeaderboardIntent() {
+//        return Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient, RC_UNUSED);
+//    }
+
+    // GoogleApiClient.ConnectionCallbacks
+    @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "onConnected(): connected to Google APIs");
-        if (mListener != null) {
-            mListener.onSignedIn();
-        }
+        mListener.onSignedIn();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         Log.d(TAG, "onConnectionSuspended(): attempting to connect");
-        mGoogleApiClient.connect();
+        connect();
     }
 
     @Override
@@ -104,9 +115,7 @@ public class GoogleSignInManager implements SignInManager, GoogleApiClient.Conne
             return;
         }
 
-        if (mSignInClicked || mAutoStartSignInFlow) {
-            mAutoStartSignInFlow = false;
-            mSignInClicked = false;
+        if (mSignInRequestedChecker.shouldSignInAutomatically()) {
             mResolvingConnectionFailure = true;
 
             boolean resolved = false;
@@ -117,21 +126,17 @@ public class GoogleSignInManager implements SignInManager, GoogleApiClient.Conne
                 } catch (IntentSender.SendIntentException e) {
                     // The intent was canceled before it was sent.  Return to the default
                     // state and attempt to connect to get an updated ConnectionResult.
-                    mGoogleApiClient.connect();
+                    connect();
                     resolved = false;
                 }
             } else {
                 // not resolvable... so show an error message
                 int errorCode = connectionResult.getErrorCode();
-                Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
+                // TODO look into this
+                boolean dialogShown = GooglePlayServicesUtil.showErrorDialogFragment(errorCode,
                         mActivity, RC_SIGN_IN);
-                if (dialog != null) {
-                    dialog.show();
-                } else {
-                    // no built-in dialog: show the fallback error message
-                    if (mListener != null) {
-                        mListener.onFailure();
-                    }
+                if (!dialogShown) {
+                    mListener.onFailure();
                 }
                 resolved = false;
             }
@@ -141,8 +146,16 @@ public class GoogleSignInManager implements SignInManager, GoogleApiClient.Conne
         }
 
         // Sign-in failed
-        if (mListener != null) {
-            mListener.onFailure();
+        mListener.onFailure();
+    }
+
+    private void connect() {
+        mGoogleApiClient.connect();
+    }
+
+    private void disconnect() {
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.producttbd.spacemanchuck.user;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,8 +59,9 @@ public class WarningAcceptanceCheckerTest {
     public void shouldShowWarning_noValueInSharedPreferencesReturnsTrue() {
         // Set out MockSharedPreferences to return the default value given.
         when(mMockSharedPreferences.getLong(eq(KEY), anyLong())).thenAnswer(new Answer<Long>() {
+            @NonNull
             @Override
-            public Long answer(InvocationOnMock invocation) throws Throwable {
+            public Long answer(@NonNull InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
                 return (Long) args[1];
             }

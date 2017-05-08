@@ -1,5 +1,6 @@
 package com.producttbd.spacemanchuck.tosslistening;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import junit.framework.Assert;
@@ -23,7 +24,7 @@ public class TossStateTrackerTest {
         @Nullable String debugText = null;
 
         @Override
-        public void onTossCompleted(TossResult tossResult) {
+        public void onTossCompleted(@NonNull TossResult tossResult) {
             completed = true;
             this.time = tossResult.TimeSeconds;
             this.height = tossResult.HeightMeters;

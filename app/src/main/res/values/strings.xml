@@ -19,11 +19,12 @@
 
     <!--Sign in-->
     <string name="sign_in_button_label">Sign in</string>
+    <string name="cancel">Cancel</string>
     <string name="sign_in_why">Sign in with Google to share your scores and achievements with your friends.</string>
     <string name="you_are_signed_in">You are signed in with Google.</string>
     <string name="sign_out">Sign out</string>
     <string name="sign_in_to_upload_this_score">Sign in now to upload this score, save your achievements and share your progress with friends.</string>
-    <string name="sign_in_other_error">There was an issue with sign in.  Please try again later.</string>
+    <string name="sign_in_other_error">There was an issue with sign in. Please try again later.</string>
 
     <!--Results headlines-->
     <string name="result_headline_first_throw">A beautiful first toss!</string>

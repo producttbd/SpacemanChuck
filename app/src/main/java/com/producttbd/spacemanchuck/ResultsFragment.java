@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.producttbd.spacemanchuck.tosslistening.TossResult;
+import com.producttbd.spacemanchuck.user.SignInOutRequestListener;
 
 import java.util.Random;
 
@@ -44,30 +45,45 @@ public class ResultsFragment extends Fragment implements View.OnClickListener {
             R.string.result_headline_personal_best_1, R.string.result_headline_personal_best_2,
             R.string.result_headline_personal_best_3};
 
-    private OnFragmentInteractionListener mListener;
-    private TextView mReactionHeadlineTextView;
-    private TextView mHeightTextView;
+    View mAchievementsButton;
+    View mLeaderboardsButton;
+    View mSignInText;
+    View mSignInButton;
+    @Nullable private OnResultsFragmentInteractionListener mListener;
     private double mHeight = 0.0;
-    private String mResultDebugString = null;
-    private static final int[] BUTTON_IDS = { R.id.achievements_button, R.id.leaderboards_button, R.id.retry_button };
+    @Nullable private String mResultDebugString = null;
 
     public ResultsFragment() {
         // Required empty public constructor
     }
 
-    public void setThrowResults(TossResult tossResult) {
+    public void setThrowResults(@NonNull TossResult tossResult) {
         mHeight = tossResult.HeightMeters;
         mResultDebugString = tossResult.DebugString;
+    }
+
+    public void setSignedIn(boolean signedIn) {
+        if (signedIn) {
+            mSignInButton.setVisibility(View.INVISIBLE);
+            mSignInText.setVisibility(View.INVISIBLE);
+            mAchievementsButton.setVisibility(View.VISIBLE);
+            mLeaderboardsButton.setVisibility(View.VISIBLE);
+        } else {
+            mSignInButton.setVisibility(View.VISIBLE);
+            mSignInText.setVisibility(View.VISIBLE);
+            mAchievementsButton.setVisibility(View.INVISIBLE);
+            mLeaderboardsButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnResultsFragmentInteractionListener) {
+            mListener = (OnResultsFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnResultsFragmentInteractionListener");
         }
     }
 
@@ -77,16 +93,20 @@ public class ResultsFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_results, container, false);
-        for (int id : BUTTON_IDS) {
-            View button = view.findViewById(id);
-            button.setOnClickListener(this);
-        }
+        TextView mReactionHeadlineTextView = (TextView) view.findViewById(R.id.results_headline);
+        TextView mHeightTextView = (TextView) view.findViewById(R.id.results_height);
+        View mAchievementsButton = view.findViewById(R.id.results_achievements_button);
+        mAchievementsButton.setOnClickListener(this);
+        View mLeaderboardsButton = view.findViewById(R.id.results_leaderboards_button);
+        mLeaderboardsButton.setOnClickListener(this);
+        View mRetryButton = view.findViewById(R.id.results_retry_button);
+        mRetryButton.setOnClickListener(this);
+        mSignInText = view.findViewById(R.id.results_sign_in_text);
+        mSignInButton = view.findViewById(R.id.results_sign_in_button);
 
-        TextView mReactionHeadlineTextView = (TextView) view.findViewById(R.id.reactionHeadline);
-        TextView mHeightTextView = (TextView) view.findViewById(R.id.heightText);
         SharedPreferences sharedPreferences =
                 getContext().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
@@ -121,17 +141,17 @@ public class ResultsFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(@NonNull View view) {
         Log.d(TAG, "onClick");
         if (mListener == null) return;
         switch (view.getId()) {
-            case R.id.achievements_button:
+            case R.id.results_achievements_button:
                 mListener.onAchievementsRequested();
                 break;
-            case R.id.leaderboards_button:
+            case R.id.results_leaderboards_button:
                 mListener.onLeaderboardsRequested();
                 break;
-            case R.id.retry_button:
+            case R.id.results_retry_button:
                 mListener.onRetryRequested();
                 break;
             default:
@@ -160,7 +180,7 @@ public class ResultsFragment extends Fragment implements View.OnClickListener {
         return getString(headlines[RAND.nextInt(headlines.length)]);
     }
 
-    public interface OnFragmentInteractionListener {
+    public interface OnResultsFragmentInteractionListener extends SignInOutRequestListener {
         void onAchievementsRequested();
         void onLeaderboardsRequested();
         void onRetryRequested();

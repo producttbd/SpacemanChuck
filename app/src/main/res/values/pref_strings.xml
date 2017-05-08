@@ -3,4 +3,5 @@
     <string name="preference_file_key" translatable="false">com.producttbd.spacemanchuck.PREFERENCE_FILE_KEY</string>
     <string name="personal_high_score_key" translatable="false">com.producttbd.spacemanchuck.HIGH_SCORE</string>
     <string name="warning_accepted_time" translatable="false">com.producttbd.spacemanchuck.user.WARNING_ACCEPTED_TIME</string>
+    <string name="sign_in_requested" translatable="false">com.producttbd.spacemanchuck.user.SIGN_IN_REQUESTED</string>
 </resources>

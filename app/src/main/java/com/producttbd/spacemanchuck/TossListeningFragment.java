@@ -5,6 +5,8 @@ import android.animation.AnimatorSet;
 import android.content.Context;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ public class TossListeningFragment extends Fragment
     private View mThrowCommandText;
     private View mReadyButton;
     private AccelerometerListener mAccelerometerListener;
+    @Nullable
     private OnTossListeningFragmentInteractionListener mListener;
 
     public TossListeningFragment() {
@@ -47,7 +50,7 @@ public class TossListeningFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_toss_listening, container, false);
@@ -66,7 +69,7 @@ public class TossListeningFragment extends Fragment
             mListener = (OnTossListeningFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnResultsFragmentInteractionListener");
         }
     }
 
@@ -87,7 +90,7 @@ public class TossListeningFragment extends Fragment
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(@NonNull View view) {
         if (view.getId() == R.id.readyButton) {
             setReadyToTossState();
         }

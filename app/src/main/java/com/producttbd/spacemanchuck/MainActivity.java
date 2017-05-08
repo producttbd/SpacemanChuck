@@ -11,44 +11,48 @@ import com.google.android.gms.games.Games;
 import com.producttbd.spacemanchuck.achievements.AchievementsCoordinator;
 import com.producttbd.spacemanchuck.tosslistening.TossResult;
 import com.producttbd.spacemanchuck.user.GoogleSignInManager;
+import com.producttbd.spacemanchuck.user.SignInManager;
 import com.producttbd.spacemanchuck.user.WarningAcceptanceChecker;
 
 public class MainActivity extends AppCompatActivity implements
         WarningFragment.OnWarningFragmentInteractionListener,
         TossListeningFragment.OnTossListeningFragmentInteractionListener,
-        ResultsFragment.OnFragmentInteractionListener {
+        ResultsFragment.OnResultsFragmentInteractionListener,
+        SignInManager.SignInListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private WarningFragment mWarningFragment;
     private TossListeningFragment mTossListeningFragment;
     private ResultsFragment mResultsFragment;
 
-    private SharedPreferences mSharedPreferences;
     private WarningAcceptanceChecker mWarningAcceptanceChecker;
 
     private GoogleSignInManager mSignInManager;
     private AchievementsCoordinator mAchievementsCoordinator;
 
+    // ===== Lifecycle overrides =====
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mWarningFragment = new WarningFragment();
         mTossListeningFragment = new TossListeningFragment();
         mResultsFragment = new ResultsFragment();
 
-        mSharedPreferences = getSharedPreferences(
+        SharedPreferences sharedPreferences = getSharedPreferences(
                 getString(R.string.preference_file_key), MODE_PRIVATE);
-        mWarningAcceptanceChecker = new WarningAcceptanceChecker(
-                mSharedPreferences, getString(R.string.warning_accepted_time));
-
-        mSignInManager = new GoogleSignInManager(this);
+        mSignInManager = new GoogleSignInManager(this, this);
         mAchievementsCoordinator = new AchievementsCoordinator(
-                mSignInManager, mSharedPreferences, getResources());
+                mSignInManager, sharedPreferences, getResources());
+        mWarningAcceptanceChecker = new WarningAcceptanceChecker(
+                sharedPreferences, getString(R.string.warning_accepted_time));
 
-        Fragment firstFragment = mWarningAcceptanceChecker.shouldShowWarning(System
-                .currentTimeMillis()) ? mWarningFragment : mTossListeningFragment;
+        Fragment firstFragment;
+        if (mWarningAcceptanceChecker.shouldShowWarning(System.currentTimeMillis())) {
+            // Only create this fragment if needed.
+            firstFragment = new WarningFragment();
+        } else {
+            firstFragment = mTossListeningFragment;
+        }
         // TODO There is a comment in the TypeANumber example talking about supporting rotation and
         // that being problematic---it could cause overlapping fragments.
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        mSignInManager.connect();
+        mSignInManager.start();
     }
 
     @Override
@@ -70,17 +74,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        mSignInManager.disconnect();
+        mSignInManager.stop();
     }
 
-
-    @Override
-    public void onTossCompleted(TossResult tossResult) {
-        mResultsFragment.setThrowResults(tossResult);
-        mAchievementsCoordinator.add(tossResult);
-        switchToFragment(mResultsFragment);
-    }
-
+    // ===== WarningFragment.OnWarningFragmentInteractionListener implementations =====
     @Override
     public void onWarningAccept() {
         Log.d(TAG, "onWarningAccept");
@@ -95,6 +92,26 @@ public class MainActivity extends AppCompatActivity implements
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    // ===== TossListeningFragment.OnTossListeningFragmentInteractionListener implementations =====
+    @Override
+    public void onTossCompleted(TossResult tossResult) {
+        mResultsFragment.setThrowResults(tossResult);
+        mAchievementsCoordinator.add(tossResult);
+        switchToFragment(mResultsFragment);
+    }
+
+    // ===== ResultsFragment.OnResultsFragmentInteractionListener implementations =====
+
+    @Override
+    public void onSignInRequested() {
+        signIn();
+    }
+
+    @Override
+    public void onSignOutRequested() {
+        signOut();
     }
 
     @Override
@@ -125,9 +142,39 @@ public class MainActivity extends AppCompatActivity implements
         mTossListeningFragment.jumpToListening();
     }
 
+    // ===== SignInManager.SignInListener implementations =====
+    @Override
+    public void createPromptToSignIn() {
+        // TODO something with SignInDialogFragment
+    }
+
+    @Override
+    public void onSignedIn() {
+        mResultsFragment.setSignedIn(true);
+    }
+
+    @Override
+    public void onSignedOut() {
+        mResultsFragment.setSignedIn(false);
+    }
+
+    @Override
+    public void onFailure() {
+        // TODO Show UI change or toast?
+        mResultsFragment.setSignedIn(false);
+    }
+
     private void switchToFragment(Fragment newFrag) {
         Log.d(TAG, "switchToFragment");
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newFrag)
                 .addToBackStack(null).commit();
+    }
+
+    private void signIn() {
+        mSignInManager.onSignInRequested();
+    }
+
+    private void signOut() {
+        mSignInManager.onSignOutRequested();
     }
 }

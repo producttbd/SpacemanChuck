@@ -1,6 +1,7 @@
 package com.producttbd.spacemanchuck.achievements;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +79,7 @@ public class LocalTotalsManagerTest {
     }
 
     private void testCombinesWritesAndRoundsValuesAppropriately(
-            String key, float currentlyStoredValue, float newValue, int expectedValueToUpload) {
+            @NonNull String key, float currentlyStoredValue, float newValue, int expectedValueToUpload) {
         when(mMockSharedPreferences.getFloat(key, 0.0f)).thenReturn(currentlyStoredValue);
 
 
