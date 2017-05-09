@@ -29,11 +29,6 @@ public class GoogleSignInManager implements SignInManager, GoogleApiClient.Conne
     @NonNull private final SignInListener mListener;
     private boolean mResolvingConnectionFailure = false;
 
-    // request codes we use when invoking an external activity
-    private static final int RC_RESOLVE = 5000;
-    private static final int RC_UNUSED = 5001;
-    private static final int RC_SIGN_IN = 9001;
-
     public GoogleSignInManager(@NonNull Activity activity, @NonNull SignInListener listener) {
         mActivity = activity;
         mListener = listener;

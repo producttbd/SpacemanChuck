@@ -118,8 +118,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onAchievementsRequested() {
         Log.d(TAG, "onAchievementsRequested");
         if (mSignInManager.isConnected()) {
-            startActivityForResult(Games.Achievements.getAchievementsIntent(mSignInManager.getGoogleApiClient()),
-                    5001);
+            startActivityForResult(
+                    Games.Achievements.getAchievementsIntent(mSignInManager.getGoogleApiClient()),
+                    SignInManager.RC_UNUSED);
         } else {
             // TODO handle error
         }
@@ -129,8 +130,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onLeaderboardsRequested() {
         Log.d(TAG, "onLeaderboardsRequested");
         if (mSignInManager.isConnected()) {
-            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mSignInManager.getGoogleApiClient()),
-                    5001);
+            startActivityForResult(
+                    Games.Leaderboards.getAllLeaderboardsIntent(mSignInManager.getGoogleApiClient()),
+                    SignInManager.RC_UNUSED);
         } else {
             // TODO handle error
         }
