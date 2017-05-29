@@ -1,5 +1,6 @@
 package com.producttbd.spacemanchuck;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import com.google.android.gms.games.Games;
 import com.producttbd.spacemanchuck.achievements.AchievementsCoordinator;
 import com.producttbd.spacemanchuck.tosslistening.TossResult;
 import com.producttbd.spacemanchuck.user.GoogleSignInManager;
+import com.producttbd.spacemanchuck.user.SignInDialogFragment;
 import com.producttbd.spacemanchuck.user.SignInManager;
 import com.producttbd.spacemanchuck.user.WarningAcceptanceChecker;
 
@@ -147,7 +149,9 @@ public class MainActivity extends AppCompatActivity implements
     // ===== SignInManager.SignInListener implementations =====
     @Override
     public void createPromptToSignIn() {
-        // TODO something with SignInDialogFragment
+        Log.d(TAG, "createPromptToSignIn");
+        DialogFragment dialogFragment = new SignInDialogFragment();
+        dialogFragment.show(getFragmentManager(), "signin");
     }
 
     @Override

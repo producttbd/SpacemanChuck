@@ -45,6 +45,7 @@ public class ResultsFragment extends Fragment implements View.OnClickListener {
             R.string.result_headline_personal_best_1, R.string.result_headline_personal_best_2,
             R.string.result_headline_personal_best_3};
 
+    boolean mSignedIn;
     View mAchievementsButton;
     View mLeaderboardsButton;
     View mSignInText;
@@ -63,17 +64,8 @@ public class ResultsFragment extends Fragment implements View.OnClickListener {
     }
 
     public void setSignedIn(boolean signedIn) {
-        if (signedIn) {
-            mSignInButton.setVisibility(View.INVISIBLE);
-            mSignInText.setVisibility(View.INVISIBLE);
-            mAchievementsButton.setVisibility(View.VISIBLE);
-            mLeaderboardsButton.setVisibility(View.VISIBLE);
-        } else {
-            mSignInButton.setVisibility(View.VISIBLE);
-            mSignInText.setVisibility(View.VISIBLE);
-            mAchievementsButton.setVisibility(View.INVISIBLE);
-            mLeaderboardsButton.setVisibility(View.INVISIBLE);
-        }
+        mSignedIn = signedIn;
+        setVisibilities();
     }
 
     @Override
@@ -106,6 +98,7 @@ public class ResultsFragment extends Fragment implements View.OnClickListener {
         mRetryButton.setOnClickListener(this);
         mSignInText = view.findViewById(R.id.results_sign_in_text);
         mSignInButton = view.findViewById(R.id.results_sign_in_button);
+        setVisibilities();
 
         SharedPreferences sharedPreferences =
                 getContext().getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
@@ -154,8 +147,24 @@ public class ResultsFragment extends Fragment implements View.OnClickListener {
             case R.id.results_retry_button:
                 mListener.onRetryRequested();
                 break;
+            case R.id.results_sign_in_button:
+                mListener.onSignInRequested();
             default:
                 break;
+        }
+    }
+
+    private void setVisibilities() {
+        if (mSignedIn && isVisible()) {
+            mSignInButton.setVisibility(View.INVISIBLE);
+            mSignInText.setVisibility(View.INVISIBLE);
+            mAchievementsButton.setVisibility(View.VISIBLE);
+            mLeaderboardsButton.setVisibility(View.VISIBLE);
+        } else {
+            mSignInButton.setVisibility(View.VISIBLE);
+            mSignInText.setVisibility(View.VISIBLE);
+            mAchievementsButton.setVisibility(View.INVISIBLE);
+            mLeaderboardsButton.setVisibility(View.INVISIBLE);
         }
     }
 

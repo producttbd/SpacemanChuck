@@ -33,19 +33,29 @@ public class SignInDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         return builder.setMessage(R.string.sign_in_why)
                 .setPositiveButton(R.string.sign_in_button_label, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onSignInRequested();
+                        if (mListener != null) {
+                            mListener.onSignInRequested();
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onSignOutRequested();
+                        if (mListener != null) {
+                            mListener.onSignOutRequested();
+                        }
                     }
                 })
                 .create();
